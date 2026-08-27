@@ -1,0 +1,82 @@
+/* SSO 登录注册壳：二次元渐变背景 + 玻璃拟态卡片 */
+.auth-layout {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ffd9ec 0%, #d9c2ff 45%, #bfe0ff 100%);
+}
+
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 18% 22%,
+      rgba(255, 255, 255, 0.55),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 82% 78%,
+      rgba(213, 168, 255, 0.45),
+      transparent 42%
+    );
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 18px 48px rgba(149, 128, 255, 0.25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.auth-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-title h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  color: #6d4aff;
+  letter-spacing: 0.5px;
+}
+
+.auth-title p {
+  margin: 0;
+  font-size: 13px;
+  color: #8a8aa3;
+}
+
+.auth-footer {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: #8a8aa3;
+}
+
+.auth-footer a {
+  color: #6d4aff;
+  margin: 0 6px;
+}
+
+.auth-hint {
+  margin-top: 14px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #7a6db5;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  text-align: center;
+}

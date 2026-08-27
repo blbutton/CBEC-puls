@@ -1,0 +1,33 @@
+spring:
+  data:
+    redis:
+      host: redis # Redis服务器地址
+      database: 0 # Redis数据库索引（默认为0）
+      port: 6379 # Redis服务器连接端口
+      password: # 生产环境按实际配置
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 64
+          max-idle: 32
+          min-idle: 8
+          max-wait: 3000ms
+management:
+  health:
+    redis:
+      enabled: false # 禁用 Redis 健康检查
+  endpoint:
+    env:
+      show-values: when-authorized
+    configprops:
+      show-values: when-authorized
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    com.macro.mall.gateway: info
+    org.springframework.cloud.gateway: info
+    reactor.netty: warn
+logstash:
+  host: logstash

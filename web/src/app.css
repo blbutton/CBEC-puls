@@ -1,0 +1,311 @@
+/* 时间轴样式 */
+.anime-timeline {
+  position: relative;
+  padding-left: 48px;
+}
+.anime-timeline::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    rgba(154, 139, 255, 0.9),
+    rgba(255, 158, 199, 0.7)
+  );
+  border-radius: 3px;
+}
+.anime-timeline-dot {
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9ec7, #9a8bff);
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(122, 107, 255, 0.35);
+}
+.anime-timeline-item {
+  position: relative;
+  padding-bottom: 36px;
+}
+.anime-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+/* Reveal 动画类（公共约定已存在，这里作备份） */
+.anime-reveal {
+  opacity: 0;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+.anime-reveal.visible {
+  opacity: 1;
+  transform: translate(0) scale(1);
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+  .about-grid-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .about-grid-tech {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .about-grid-team {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 480px) {
+  .about-grid-stats {
+    grid-template-columns: 1fr !important;
+  }
+  .about-grid-tech {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .about-grid-team {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .anime-timeline {
+    padding-left: 38px;
+  }
+}
+@keyframes anime-caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.anime-caret {
+  display: inline-block;
+  width: 2px;
+  color: #7a6bff;
+  font-weight: bold;
+  margin-left: 2px;
+  animation: anime-caret-blink 1s step-end infinite;
+}
+
+/* 消息气泡弹入 */
+@keyframes anime-bubble-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.anime-bubble-in {
+  animation: anime-bubble-in 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* 思考中跳动圆点 */
+@keyframes chat-dot-jump {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+.chat-thinking-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7a6bff;
+  margin: 0 3px;
+  animation: chat-dot-jump 1.2s ease-in-out infinite;
+}
+.chat-thinking-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.chat-thinking-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* 聊天室容器样式 */
+.chat-room-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.chat-header {
+  padding: 22px 28px 0;
+  text-align: center;
+}
+.chat-header h1 {
+  margin: 0 0 6px;
+  font-size: 26px;
+  background: linear-gradient(90deg, #ff7eb3, #7a6bff, #5bb5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.chat-header p {
+  margin: 0;
+  color: #8a8aa3;
+  font-size: 14px;
+}
+
+.chat-quick-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 0 28px;
+}
+.chat-quick-pill {
+  cursor: pointer;
+  border: 1px solid rgba(122, 107, 255, 0.28);
+  background: rgba(255, 255, 255, 0.7);
+  color: #6a5ac7;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
+}
+.chat-quick-pill:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(90deg, #ffc0dd, #b9a7ff);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 24px rgba(149, 128, 255, 0.22);
+}
+
+.chat-body {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  box-shadow: 0 12px 36px rgba(149, 128, 255, 0.14);
+  padding: 18px 20px;
+  height: 440px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+.chat-body::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.55));
+  pointer-events: none;
+  border-radius: 0 0 20px 20px;
+}
+
+.chat-msg-row {
+  display: flex;
+}
+.chat-msg-row.user {
+  justify-content: flex-end;
+}
+.chat-msg-row.ai {
+  justify-content: flex-start;
+}
+
+.chat-bubble {
+  max-width: 72%;
+  padding: 10px 14px;
+  line-height: 1.55;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chat-bubble.user {
+  background: linear-gradient(90deg, #ff92c8, #7a6bff);
+  color: #fff;
+  border-radius: 14px 4px 14px 14px;
+  box-shadow: 0 8px 24px rgba(149, 128, 255, 0.28);
+}
+.chat-bubble.ai {
+  background: #fff;
+  color: #44445c;
+  border: 1px solid rgba(122, 107, 255, 0.2);
+  border-radius: 4px 14px 14px 14px;
+}
+.chat-bubble.thinking {
+  color: #6a5ac7;
+  font-style: italic;
+}
+
+.chat-input-bar {
+  display: flex;
+  gap: 10px;
+}
+.chat-input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(122, 107, 255, 0.24);
+  background: rgba(255, 255, 255, 0.75);
+  outline: none;
+  font-size: 15px;
+  color: #44445c;
+  transition:
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.chat-input:focus {
+  border-color: #7a6bff;
+  box-shadow: 0 0 0 4px rgba(122, 107, 255, 0.12);
+}
+.chat-send-btn {
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(90deg, #ff7eb3, #7a6bff);
+  padding: 0 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+  box-shadow: 0 8px 24px rgba(149, 128, 255, 0.34);
+}
+.chat-send-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(149, 128, 255, 0.42);
+}
+@media (max-width: 640px) {
+  .chat-bubble {
+    max-width: 85%;
+    font-size: 13px;
+  }
+  .chat-body {
+    height: 380px;
+  }
+  .chat-quick-pill {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}

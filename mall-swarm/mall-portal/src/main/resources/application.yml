@@ -1,0 +1,156 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: mall-portal
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:mysql://192.168.100.137:3306/mall
+    username: mall
+    password: mall
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+  data:
+    mongodb:
+      host: 192.168.100.137
+      port: 27017
+      database: mall-port
+      username: mall-port
+      password: KAfTjkFAfJhQekrY0
+    redis:
+      host: 192.168.100.137 # Redis服务器地址
+      database: 0 # Redis数据库索引（默认为0）
+      port: 6379 # Redis服务器连接端口
+      password: redis_EE7cMc # Redis服务器连接密码（默认为空）
+      timeout: 3000ms # 连接超时时间（毫秒）
+  kafka:
+    bootstrap-servers: 192.168.100.137:9092 # Kafka (KRaft 模式) 接入地址
+    producer:
+      retries: 3
+      acks: 1
+      properties:
+        max.in.flight.requests.per.connection: 5
+        enable.idempotence: true
+    consumer:
+      group-id: mall-portal
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      max-poll-records: 100
+      # 默认关闭消费者自动启动：KRaft Broker SyncGroup 返回 UNKNOWN_SERVER_ERROR 时
+      # 会导致 Listener 无限 JoinGroup/SyncGroup 循环，占用CPU刷日志。
+      # 订单取消由 OrderTimeOutCancelTask 定时扫描兜底；Broker 修复后再设为 true 开启。
+      auto-startup: false
+      properties:
+        max.poll.interval.ms: 600000
+        session.timeout.ms: 30000
+        reconnect.backoff.ms: 3000
+        retry.backoff.ms: 3000
+    listener:
+      ack-mode: manual_immediate
+      poll-timeout: 3000
+      missing-topics-fatal: false # topic 不存在时不致命失败
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+logging:
+  level:
+    root: INFO
+    # Kafka 客户端调试日志默认 DEBUG，Broker 异常时会产生大量输出
+    org.apache.kafka: WARN
+    org.springframework.kafka: INFO
+    org.apache.kafka.clients.NetworkClient: ERROR
+    org.apache.kafka.clients.consumer.internals.ConsumerCoordinator: WARN
+    # KafkaErrorHandler 本身会限流，这里只记录 WARN 及以上
+    KafkaErrorHandler: WARN
+    # Nacos 优雅关闭已知 NPE，不影响运行，降到 ERROR
+    com.alibaba.cloud.nacos.registry.NacosGracefulShutdownDelegate: ERROR
+    com.alibaba.nacos.common.notify.NotifyCenter: ERROR
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*' #暴露Actuator的监控端点
+  endpoint:
+    health:
+      show-details: always #显示健康的详细信息
+    env:
+      show-values: always #默认Actuator的环境变量会以****显示，这里开启显示
+    configprops:
+      show-values: always #默认Actuator的配置属性会以****显示，这里开启显示
+    info:
+      access: read-only
+  health:
+    # 禁用 MongoDB/Redis 健康检查：
+    # 服务器端认证失败（密码不匹配）会导致健康检查持续刷错误日志。
+    # MongoDB 用于品牌关注/收藏/阅读历史（非核心），Redis 用于验证码/订单号/会员缓存（核心）。
+    # 禁用健康检查只停止日志刷屏，业务代码仍会因认证失败而失败 ——
+    # 请修正 192.168.100.137 上 MongoDB/Redis 的真实密码后，可重新启用健康检查。
+    mongo:
+      enabled: false
+    redis:
+      enabled: false
+redis:
+  database: mall-swarm
+  key:
+    authCode: 'ums:authCode'
+    orderId: 'oms:orderId'
+    member: 'ums:member'
+  expire:
+    authCode: 90 # 验证码超期时间
+    common: 86400 # 24小时
+kafka:
+  topic:
+    orderCancel: mall.order.cancel.topic
+springdoc:
+  swagger-ui:
+    # 修改Swagger UI路径
+    path: /swagger-ui.html
+    # 开启Swagger UI界面
+    enabled: true
+    # 用于配置tag和operation的展开方式，这里配置为都不展开
+    doc-expansion: 'none'
+  api-docs:
+    # 修改api-docs路径
+    path: /v3/api-docs
+    # 开启api-docs
+    enabled: true
+  group-configs:
+    - group: 'mall-portal'
+      packages-to-scan: com.macro.mall.portal.controller
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: Authorization
+  # token有效期，单位秒，-1代表永不过期
+  timeout: 604800
+  # token临时有效期 (指定时间内无操作就视为token过期)，单位秒
+  active-timeout: -1
+  # 是否允许同一账号并发登录 (为false时新登录挤掉旧登录)
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个token (为false时每次登录新建一个token)
+  is-share: false
+  # token风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false
+  # 是否从cookie中读取token
+  is-read-cookie: false
+  # 是否从head中读取token
+  is-read-header: true
+  # token前缀
+  token-prefix: Bearer
+  # jwt秘钥
+  jwt-secret-key: sa-secret-key123
+  # 是否打印banner
+  is-print: false

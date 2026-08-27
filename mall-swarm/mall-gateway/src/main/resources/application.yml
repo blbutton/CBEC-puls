@@ -1,0 +1,254 @@
+server:
+  port: 8201
+
+spring:
+  application:
+    name: mall-gateway
+  profiles:
+    active: dev
+  cloud:
+    gateway:
+      # ===== Spring Cloud Gateway 4.x：server.webflux 子节点 =====
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          # ===== 路由配置 =====
+          routes:
+            - id: mall-auth
+              uri: lb://mall-auth
+              predicates:
+                - Path=/mall-auth/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: defaultCircuitBreaker
+                    fallbackUri: forward:/fallback/mall-auth
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 200
+                    redis-rate-limiter.burstCapacity: 400
+                    key-resolver: "#{@ip_path}"
+            - id: mall-admin
+              uri: lb://mall-admin
+              predicates:
+                - Path=/mall-admin/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: defaultCircuitBreaker
+                    fallbackUri: forward:/fallback/mall-admin
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 100
+                    redis-rate-limiter.burstCapacity: 200
+                    key-resolver: "#{@ip_path}"
+            - id: mall-portal
+              uri: lb://mall-portal
+              predicates:
+                - Path=/mall-portal/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: defaultCircuitBreaker
+                    fallbackUri: forward:/fallback/mall-portal
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 200
+                    redis-rate-limiter.burstCapacity: 400
+                    key-resolver: "#{@ip_path}"
+            # ===== /api 前缀 → mall-portal（StripPrefix=1：/api/product/search → /product/search）=====
+            - id: mall-api-portal
+              uri: lb://mall-portal
+              predicates:
+                - Path=/api/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: defaultCircuitBreaker
+                    fallbackUri: forward:/fallback/mall-portal
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 200
+                    redis-rate-limiter.burstCapacity: 400
+                    key-resolver: "#{@ip_path}"
+            - id: mall-search
+              uri: lb://mall-search
+              predicates:
+                - Path=/mall-search/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: defaultCircuitBreaker
+                    fallbackUri: forward:/fallback/mall-search
+            - id: mall-ArticleSummary
+              uri: lb://mall-ArticleSummary
+              predicates:
+                - Path=/mall-ArticleSummary/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: defaultCircuitBreaker
+                    fallbackUri: forward:/fallback/mall-ArticleSummary
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 200
+                    redis-rate-limiter.burstCapacity: 400
+                    key-resolver: "#{@ip_path}"
+            - id: mall-monitor
+              uri: lb://mall-monitor
+              predicates:
+                - Path=/mall-monitor/**
+              filters:
+                - StripPrefix=1
+                - name: CircuitBreaker
+                  args:
+                    name: defaultCircuitBreaker
+                    fallbackUri: forward:/fallback/mall-monitor
+  data:
+    redis:
+      database: 0
+      port: 6379
+      host: 192.168.100.137
+      password: redis_EE7cMc   # 与 mall-portal 对齐
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 32
+          max-idle: 16
+          min-idle: 4
+          max-wait: 3000ms
+
+# ===== 网关白名单 =====
+secure:
+  ignore:
+    urls:
+      - "/doc.html"
+      - "/v3/api-docs/swagger-config"
+      - "/*/v3/api-docs/default"
+      - "/*/v3/api-docs"
+      - "/*/swagger-ui/**"
+      - "/webjars/**"
+      - "/favicon.ico"
+      - "/actuator/**"
+      # ==== mall-portal 公开接口（登录态可选 / 无需登录）====
+      - "/mall-portal/sso/login"
+      - "/mall-portal/sso/register"
+      - "/mall-portal/sso/getAuthCode"
+      - "/mall-portal/sso/updatePassword"
+      - "/mall-portal/product/**"
+      - "/mall-portal/brand/**"
+      - "/mall-portal/home/**"
+      - "/mall-portal/member/coupon/listByProduct/**"
+      - "/mall-portal/alipay/notify"
+
+# ===== Actuator 监控端点 =====
+management:
+  health:
+    redis:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    env:
+      show-values: when-authorized
+    configprops:
+      show-values: when-authorized
+    info:
+      access: read-only
+
+# ===== Knife4j 网关文档聚合 =====
+knife4j:
+  gateway:
+    enabled: true
+    strategy: discover
+    discover:
+      version: openapi3
+      enabled: true
+      excluded-services: mall-monitor
+    tags-sorter: order
+    operations-sorter: order
+
+# ===== Sa-Token 鉴权 =====
+sa-token:
+  token-name: Authorization
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: false
+  token-style: uuid
+  is-log: false
+  is-read-cookie: false
+  is-read-header: true
+  token-prefix: Bearer
+  is-print: false
+
+# ===== Resilience4j 熔断默认参数 =====
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        slow-call-duration-threshold: 5s
+        slow-call-rate-threshold: 60
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        register-health-indicator: false
+    instances:
+      defaultCircuitBreaker:
+        baseConfig: default
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 30s
+        cancel-running-future: true
+    instances:
+      defaultCircuitBreaker:
+        baseConfig: default
+
+# ===== 网关自定义扩展配置 =====
+gateway:
+  ip-filter:
+    mode: blacklist
+    list: []
+  security-headers:
+    enabled: true
+    content-type-options: true
+    xss-protection: true
+    frame-options: true
+    hsts: true
+    content-security-policy: true
+    referrer-policy: true
+    csp-directive: "default-src 'self'"
+  request:
+    max-size-mb: 10
+    exclude-paths: []
+  rate-limit:
+    enabled: true
+    admin-rate: 100
+    admin-burst: 200
+    portal-rate: 200
+    portal-burst: 400
+    default-key-resolver: ip_path
+
+# ===== 日志级别 =====
+logging:
+  level:
+    root: info
+    com.macro.mall.gateway: info
+    org.springframework.cloud.gateway: info
+    reactor.netty: warn

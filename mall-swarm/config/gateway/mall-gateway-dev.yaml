@@ -1,0 +1,32 @@
+spring:
+  data:
+    redis:
+      host: 192.168.100.137 # Redis服务器地址
+      database: 0 # Redis数据库索引（默认为0）
+      port: 6379 # Redis服务器连接端口
+      password: redis_EE7cM # Redis服务器连接密码（与 mall-portal 保持一致）
+      timeout: 3000ms # 连接超时时间（毫秒）
+      lettuce:
+        pool:
+          max-active: 32
+          max-idle: 16
+          min-idle: 4
+          max-wait: 3000ms
+management:
+  health:
+    redis:
+      enabled: false # 禁用 Redis 健康检查，避免认证失败日志刷屏
+  endpoint:
+    env:
+      show-values: when-authorized
+    configprops:
+      show-values: when-authorized
+logging:
+  level:
+    root: info
+    com.macro.mall.gateway: debug
+    org.springframework.cloud.gateway: info
+    reactor.netty: warn
+logstash:
+  host: 192.168.100.137
+  enableInnerLog: false

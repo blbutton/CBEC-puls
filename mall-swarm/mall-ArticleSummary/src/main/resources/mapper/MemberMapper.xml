@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mars.boot4.mallarticlesummary.member.infrastructure.persistence.MemberMapper">
+
+    <resultMap id="BaseResultMap" type="com.mars.boot4.mallarticlesummary.member.domain.model.Member">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="avatar" property="avatar"/>
+        <result column="level" property="level"/>
+        <result column="level_code" property="levelCode"/>
+        <result column="status" property="status"/>
+        <result column="start_time" property="startTime"/>
+        <result column="expire_time" property="expireTime"/>
+        <result column="balance" property="balance"/>
+        <result column="points" property="points"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, phone, email, avatar, level, level_code,
+        status, start_time, expire_time, balance, points, remark, create_time, update_time
+    </sql>
+
+    <insert id="insert" parameterType="com.mars.boot4.mallarticlesummary.member.domain.model.Member" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO art_member (username, phone, email, avatar, level, level_code,
+                                status, start_time, expire_time, balance, points, remark, create_time, update_time)
+        VALUES (#{username}, #{phone}, #{email}, #{avatar}, #{level}, #{levelCode},
+                #{status}, #{startTime}, #{expireTime}, #{balance}, #{points}, #{remark},
+                COALESCE(#{createTime}, CURRENT_TIMESTAMP),
+                COALESCE(#{updateTime}, CURRENT_TIMESTAMP))
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.mars.boot4.mallarticlesummary.member.domain.model.Member">
+        UPDATE art_member
+        <set>
+            <if test="username != null">username = #{username},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="levelCode != null">level_code = #{levelCode},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="expireTime != null">expire_time = #{expireTime},</if>
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="points != null">points = #{points},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        DELETE FROM art_member WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds">
+        DELETE FROM art_member WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT <include refid="Base_Column_List"/> FROM art_member WHERE id = #{id}
+    </select>
+
+    <select id="selectListByPage" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM art_member
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (username LIKE CONCAT('%', #{keyword}, '%') OR phone LIKE CONCAT('%', #{keyword}, '%') OR email LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="status != null">AND status = #{status}</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <update id="updateStatusByIds">
+        UPDATE art_member SET status = #{status} WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </update>
+</mapper>
