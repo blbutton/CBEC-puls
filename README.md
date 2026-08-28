@@ -1,6 +1,6 @@
 # CBEC-puls
 
-> Cross-Border E-Commerce Plus — 基于 Spring Cloud 微服务架构的新一代跨境电商平台
+> Cross-Border E-Commerce Plus — 基于 Spring Cloud 微服务架构的新一代跨境电商平台（本项目前正在前后端联调中，你们也可以加入进联调中，有bug提PR）
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.14-brightgreen)](https://spring.io/projects/spring-boot)
