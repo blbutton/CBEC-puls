@@ -131,10 +131,10 @@ CBEC-puls 是一套成熟的企业级跨境电商微服务解决方案，基于 
 
 | 技术 | 说明 |
 |------|------|
-| Vue 3 | 前端框架 |
-| Vue Router | 路由管理 |
-| Pinia / Vuex | 状态管理 |
-| Element Plus | UI 组件库 |
+| react | 前端框架 |
+| react-router-dom | 路由管理 |
+| zustand / Vuex | 状态管理 |
+| antd | UI 组件库 |
 | Axios | HTTP 客户端 |
 
 ---
