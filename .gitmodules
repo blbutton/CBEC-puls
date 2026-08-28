@@ -1,4 +1,4 @@
-[submodule "sha1collisiondetection"]
+[submodule "mall-new"]
 	path = ./mall-swarm/mall-new
 	url = https://github.com/blbutton/mall-new.git
 	branch = master
