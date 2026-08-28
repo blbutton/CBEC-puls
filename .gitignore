@@ -37,3 +37,7 @@ target/
 .settings/
 .classpath
 .project
+
+# Cache #
+.cache/
+web/.cache/
