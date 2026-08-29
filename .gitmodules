@@ -1,4 +1,0 @@
-[submodule "mall-new"]
-	path = mall-new
-	url = https://github.com/blbutton/mall-new.git
-	branch = master
