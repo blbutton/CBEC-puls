@@ -41,3 +41,10 @@ target/
 # Cache #
 .cache/
 web/.cache/
+
+__pycache__
+.pytest_cache
+.venv/
+venv/
+*.pyc
+.vscode

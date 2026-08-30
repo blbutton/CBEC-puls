@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mall-AI 聊天室</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <!-- highlight.js 用于代码高亮 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" defer></script>
+</head>
+<body>
+  <!-- 加入界面 -->
+  <section id="join-screen" class="screen">
+    <div class="join-card">
+      <h1>mall-AI 聊天室</h1>
+      <p class="subtitle">实时多人聊天 · AI 多轮对话写代码</p>
+      <label>房间名
+        <input id="room-input" type="text" placeholder="lobby" maxlength="32" />
+      </label>
+      <label>用户名
+        <input id="user-input" type="text" placeholder="你的昵称" maxlength="32" />
+      </label>
+      <button id="join-btn" type="button">进入聊天室</button>
+      <p class="hint">提示：用 <code>@ai</code> 或 <code>/code</code> 触发 AI 写代码</p>
+    </div>
+  </section>
+
+  <!-- 聊天界面 -->
+  <section id="chat-screen" class="screen hidden">
+    <header class="chat-header">
+      <div class="title">
+        <span class="room-badge">#<span id="room-name">lobby</span></span>
+        <span id="online-count" class="online">0 在线</span>
+      </div>
+      <div class="actions">
+        <span id="conn-status" class="status connecting">连接中</span>
+        <button id="leave-btn" type="button" class="ghost">离开</button>
+      </div>
+    </header>
+
+    <main id="messages" class="messages"></main>
+
+    <footer class="composer">
+      <textarea id="text-input" placeholder="输入消息，@ai 或 /code 让 AI 写代码…" rows="1"></textarea>
+      <button id="send-btn" type="button">发送</button>
+    </footer>
+  </section>
+
+  <script src="/static/js/app.js" defer></script>
+</body>
+</html>

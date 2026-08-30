@@ -1,0 +1,35 @@
+# ====== 核心网络 ======
+requests>=2.31.0
+httpx>=0.25.0
+aiohttp>=3.9.0
+
+# ====== 解析库 ======
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+feedparser>=6.0.10
+
+# ====== 数据库 ======
+SQLAlchemy>=2.0.0
+PyMySQL>=1.1.0
+alembic>=1.12.0
+
+# ====== Web API ======
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# ====== 配置 ======
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+
+# ====== 调度 ======
+APScheduler>=3.10.4
+
+# ====== NLP 摘要（轻量方案）======
+jieba>=0.42.1
+summa>=1.2.0
+
+# ====== 测试 ======
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0

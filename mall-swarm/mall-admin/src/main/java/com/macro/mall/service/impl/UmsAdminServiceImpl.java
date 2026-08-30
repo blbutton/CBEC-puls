@@ -22,6 +22,7 @@ import com.macro.mall.mapper.UmsAdminRoleRelationMapper;
 import com.macro.mall.model.*;
 import com.macro.mall.service.UmsAdminCacheService;
 import com.macro.mall.service.UmsAdminService;
+import com.macro.mall.utils.DirMkdir;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,8 +68,9 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
-    public UmsAdmin register(UmsAdminParam umsAdminParam) {
+    public UmsAdmin register(UmsAdminParam umsAdminParam) throws IOException {
         UmsAdmin umsAdmin = new UmsAdmin();
+        DirMkdir dirMkdir = new DirMkdir();
         BeanUtils.copyProperties(umsAdminParam, umsAdmin);
         umsAdmin.setCreateTime(new Date());
         umsAdmin.setStatus(1);
@@ -78,6 +81,8 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         if (umsAdminList.size() > 0) {
             return null;
         }
+
+        dirMkdir.dirMkdir(umsAdmin.getUsername());
         //将密码进行加密操作
         String encodePassword = BCrypt.hashpw(umsAdmin.getPassword());
         umsAdmin.setPassword(encodePassword);

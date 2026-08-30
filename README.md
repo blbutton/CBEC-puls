@@ -18,6 +18,7 @@
 - [功能特性](#功能特性)
 - [环境要求](#环境要求)
 - [快速开始](#快速开始)
+- [一键下载依赖](#一键下载依赖)
 - [部署说明](#部署说明)
 - [目录结构](#目录结构)
 - [开发规范](#开发规范)
@@ -372,6 +373,70 @@ mvn clean install -DskipTests
 
 ---
 
+## 一键下载依赖
+
+为降低环境准备成本，项目提供 `mall-swarm/download-deps.sh` 一键下载脚本，覆盖 **Maven 后端依赖** 与 **Python mall-AI 模块依赖**。
+
+### 脚本能力
+
+| 任务 | 说明 |
+|------|------|
+| Maven 依赖 | `mvn dependency:go-offline` 预下载所有依赖到本地仓库 |
+| 公共模块安装 | 优先 `install` mall-common / mall-mbg（业务模块依赖它们） |
+| 全量编译验证 | `mvn clean install -DskipTests` 校验依赖完整性 |
+| Python 依赖 | 自动创建 `.venv` 虚拟环境，安装 `mall-AI/requirements.txt` |
+| 配置初始化 | 若 `mall-AI/.env` 不存在，自动从 `.env.example` 复制 |
+
+### 使用方法
+
+```bash
+cd mall-swarm
+
+# 赋予执行权限（首次运行）
+chmod +x download-deps.sh
+
+# 下载全部依赖（Maven + Python）
+./download-deps.sh
+
+# 仅下载 Maven 后端依赖
+./download-deps.sh maven
+
+# 仅下载 Python mall-AI 依赖
+./download-deps.sh python
+```
+
+### 前置要求
+
+- **JDK 17+** 与 **Maven 3.9+**（用于后端依赖）
+- **Python 3.10+ / pip**（用于 mall-AI 模块，脚本会自动创建虚拟环境）
+- 推荐在 `~/.m2/settings.xml` 配置阿里云镜像，pip 默认走清华源加速
+
+### 国内镜像加速（可选）
+
+如未配置 Maven 镜像，可在 `~/.m2/settings.xml` 的 `<mirrors>` 中加入：
+
+```xml
+<mirror>
+  <id>aliyunmaven</id>
+  <mirrorOf>*</mirrorOf>
+  <name>阿里云公共仓库</name>
+  <url>https://maven.aliyun.com/repository/public</url>
+</mirror>
+```
+
+> 脚本已为 pip 内置清华源 `-i https://pypi.tuna.tsinghua.edu.cn/simple`，无需额外配置。
+
+### Windows 用户说明
+
+`download-deps.sh` 为 Bash 脚本，Windows 用户可通过以下任一方式运行：
+- **Git Bash**（推荐）：右键脚本 → Git Bash Here → `./download-deps.sh`
+- **WSL**：在 WSL 终端中进入项目目录运行
+- **MSYS2 / Cygwin**：同样支持
+
+> Maven 部分亦可在 PowerShell / CMD 中直接执行 `mvn clean install -DskipTests`，Python 部分可手动 `pip install -r mall-AI/requirements.txt`。
+
+---
+
 ## 部署说明
 
 ### Docker Compose 全量部署
@@ -438,6 +503,7 @@ CBEC-puls/
 │
 └── mall-swarm/                       # 项目源码根
     ├── pom.xml                       # Maven 父工程 POM（统一版本与依赖管理）
+    ├── download-deps.sh              # 一键下载依赖脚本 (Maven + Python)
     │
     ├── config/                       # Nacos 配置中心配置文件
     │   ├── admin/                    # mall-admin dev/prod 配置
@@ -471,7 +537,8 @@ CBEC-puls/
     ├── mall-auth/                    # 认证微服务
     ├── mall-gateway/                 # 网关微服务
     ├── mall-monitor/                 # 监控微服务
-    └── mall-ArticleSummary/          # 文章摘要扩展微服务
+    ├── mall-ArticleSummary/          # 文章摘要扩展微服务
+    └── mall-AI/                     # AI 编程聊天室模块 (Python/Flask + OpenAI/Ollama)
 ```
 
 ---

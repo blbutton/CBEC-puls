@@ -6,6 +6,7 @@ import com.macro.mall.dto.UpdateAdminPasswordParam;
 import com.macro.mall.model.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public interface UmsAdminService {
     /**
      * 注册功能
      */
-    UmsAdmin register(UmsAdminParam umsAdminParam);
+    UmsAdmin register(UmsAdminParam umsAdminParam) throws IOException;
 
     /**
      * 登录功能
