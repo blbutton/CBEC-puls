@@ -82,7 +82,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
             return null;
         }
 
-        dirMkdir.dirMkdir(umsAdmin.getUsername());
+//        dirMkdir.dirMkdir(umsAdmin.getUsername());
         //将密码进行加密操作
         String encodePassword = BCrypt.hashpw(umsAdmin.getPassword());
         umsAdmin.setPassword(encodePassword);
