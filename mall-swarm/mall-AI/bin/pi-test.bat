@@ -1,3 +1,5 @@
+cd ..
+
 @echo off
 setlocal
 

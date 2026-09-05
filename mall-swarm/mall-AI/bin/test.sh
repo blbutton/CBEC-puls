@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+cd ..
+
 set -euo pipefail
 
 # Isolate user resources, credentials, temporary files, and tool configuration.
